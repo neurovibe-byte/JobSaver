@@ -1,5 +1,16 @@
+# Frontend
 node_modules
 dist
-.DS_Store
 *.local
 .vite
+
+# Backend
+backend/.venv
+backend/.env
+backend/data/
+__pycache__/
+*.pyc
+.ruff_cache/
+
+# OS
+.DS_Store

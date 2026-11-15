@@ -1,0 +1,195 @@
+/* Theme tokens + shared building blocks (used by every page). */
+
+:root {
+  --green-50: #f3f9f4;
+  --green-100: #e5f2e9;
+  --green-200: #cfe6d8;
+  --green-300: #a9d4b8;
+  --green-400: #82bd97;
+  --green-500: #67ab80;
+  --green-600: #4f9268;
+  --ink: #22372b;
+  --ink-soft: #5c7264;
+  --ink-faint: #8ba092;
+  --line: #dcebe1;
+  --danger: #cf6a5a;
+  --ease: cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter',
+    'Helvetica Neue', Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(1000px 600px at 12% -10%, rgba(160, 214, 178, 0.38), transparent 55%),
+    radial-gradient(900px 650px at 110% 110%, rgba(176, 224, 193, 0.45), transparent 55%),
+    linear-gradient(160deg, #f4faf5 0%, #edf6ef 55%, #eaf4ec 100%);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+}
+
+/* ---------- Brand ---------- */
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brand__mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--green-400), var(--green-600));
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 20px -8px rgba(79, 146, 104, 0.55);
+}
+
+.brand__name {
+  margin: 12px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.brand__tagline {
+  margin: 6px 0 22px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+/* ---------- Button ---------- */
+
+.btn {
+  width: 100%;
+  margin-top: 4px;
+  padding: 12.5px 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(180deg, var(--green-500), var(--green-600));
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  box-shadow: 0 12px 24px -10px rgba(79, 146, 104, 0.5);
+  transition: filter 0.2s, transform 0.12s var(--ease), box-shadow 0.2s;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--ghost {
+  width: auto;
+  padding-inline: 30px;
+}
+
+/* ---------- Top bar (logout) ---------- */
+
+.topbar {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  display: flex;
+  gap: 10px;
+  z-index: 40;
+}
+
+.topbar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  background: #fff;
+  border: 1px solid rgba(220, 235, 225, 0.9);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  box-shadow: 0 8px 20px -12px rgba(56, 110, 79, 0.35);
+  transition: color 0.2s, box-shadow 0.2s, transform 0.12s var(--ease);
+}
+
+.topbar__btn:hover {
+  color: var(--green-600);
+  box-shadow: 0 10px 24px -12px rgba(56, 110, 79, 0.45);
+}
+
+.topbar__btn:active {
+  transform: translateY(1px);
+}
+
+.topbar__btn--danger:hover {
+  color: var(--danger);
+}
+
+@media (max-width: 760px) {
+  .topbar {
+    right: 16px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.form__error {
+  margin: 0 0 10px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--danger);
+  background: #fdf1ef;
+  border: 1px solid #f3d3cd;
+  border-radius: 10px;
+}
+
+/* ---------- Logo (components/Logo.jsx) ---------- */
+
+.logo { display: inline-flex; align-items: center; gap: 10px; }
+.logo .brand__mark--sm { width: 36px; height: 36px; border-radius: 11px; }
+.logo__name { font-size: 18px; font-weight: 800; letter-spacing: -0.2px; color: var(--ink); }
+
+@keyframes badge-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(103, 171, 128, 0.45); }
+  100% { box-shadow: 0 0 0 7px rgba(103, 171, 128, 0); }
+}

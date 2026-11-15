@@ -1,50 +1,4 @@
-:root {
-  --green-50: #f3f9f4;
-  --green-100: #e5f2e9;
-  --green-200: #cfe6d8;
-  --green-300: #a9d4b8;
-  --green-400: #82bd97;
-  --green-500: #67ab80;
-  --green-600: #4f9268;
-  --ink: #22372b;
-  --ink-soft: #5c7264;
-  --ink-faint: #8ba092;
-  --line: #dcebe1;
-  --danger: #cf6a5a;
-  --ease: cubic-bezier(0.45, 0, 0.2, 1);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  min-height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter',
-    'Helvetica Neue', Arial, sans-serif;
-  color: var(--ink);
-  background:
-    radial-gradient(1000px 600px at 12% -10%, rgba(160, 214, 178, 0.38), transparent 55%),
-    radial-gradient(900px 650px at 110% 110%, rgba(176, 224, 193, 0.45), transparent 55%),
-    linear-gradient(160deg, #f4faf5 0%, #edf6ef 55%, #eaf4ec 100%);
-  -webkit-font-smoothing: antialiased;
-}
-
-.page {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  padding: 24px;
-}
+/* Login / register page. */
 
 /* ---------- Card ---------- */
 
@@ -56,38 +10,6 @@ body {
   box-shadow:
     0 24px 60px -18px rgba(56, 110, 79, 0.22),
     0 6px 18px rgba(56, 110, 79, 0.07);
-}
-
-/* ---------- Brand ---------- */
-
-.brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.brand__mark {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--green-400), var(--green-600));
-  display: grid;
-  place-items: center;
-  box-shadow: 0 10px 20px -8px rgba(79, 146, 104, 0.55);
-}
-
-.brand__name {
-  margin: 12px 0 0;
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-}
-
-.brand__tagline {
-  margin: 6px 0 22px;
-  text-align: center;
-  color: var(--ink-soft);
-  font-size: 14px;
 }
 
 /* ---------- Tabs (switcher) ---------- */
@@ -277,37 +199,6 @@ body {
   background: var(--green-50);
 }
 
-/* ---------- Button ---------- */
-
-.btn {
-  width: 100%;
-  margin-top: 4px;
-  padding: 12.5px 16px;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(180deg, var(--green-500), var(--green-600));
-  border: none;
-  border-radius: 13px;
-  cursor: pointer;
-  box-shadow: 0 12px 24px -10px rgba(79, 146, 104, 0.5);
-  transition: filter 0.2s, transform 0.12s var(--ease), box-shadow 0.2s;
-}
-
-.btn:hover {
-  filter: brightness(1.05);
-}
-
-.btn:active {
-  transform: translateY(1px);
-}
-
-.btn--ghost {
-  width: auto;
-  padding-inline: 30px;
-}
-
 /* ---------- Success ---------- */
 
 .success {
@@ -366,74 +257,23 @@ body {
   color: var(--ink-faint);
 }
 
-/* ---------- Top bar (lang / logout) ---------- */
 
-.topbar {
+/* ---------- Back to landing ---------- */
+
+.back-home {
   position: fixed;
-  top: 20px;
-  right: 24px;
-  display: flex;
-  gap: 10px;
-  z-index: 40;
-}
-
-.topbar__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 15px;
-  background: #fff;
-  border: 1px solid rgba(220, 235, 225, 0.9);
-  border-radius: 999px;
-  font: inherit;
+  top: 22px;
+  left: 24px;
+  padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-soft);
-  cursor: pointer;
+  text-decoration: none;
+  background: #fff;
+  border: 1px solid rgba(220, 235, 225, 0.9);
+  border-radius: 999px;
   box-shadow: 0 8px 20px -12px rgba(56, 110, 79, 0.35);
-  transition: color 0.2s, box-shadow 0.2s, transform 0.12s var(--ease);
+  z-index: 40;
 }
 
-.topbar__btn:hover {
-  color: var(--green-600);
-  box-shadow: 0 10px 24px -12px rgba(56, 110, 79, 0.45);
-}
-
-.topbar__btn:active {
-  transform: translateY(1px);
-}
-
-.topbar__btn--danger:hover {
-  color: var(--danger);
-}
-
-.topbar__lang-label {
-  animation: label-in 0.25s var(--ease);
-}
-
-@keyframes label-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (max-width: 760px) {
-  .topbar {
-    right: 16px;
-  }
-}
-
-/* ---------- Reduced motion ---------- */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    transition: none !important;
-  }
-}
+.back-home:hover { color: var(--green-600); }

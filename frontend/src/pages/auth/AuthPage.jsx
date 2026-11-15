@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import Dashboard from './Dashboard.jsx'
-import { STRINGS } from './translations.js'
-import LangButton from './LangButton.jsx'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { LogoMark } from '../../components/Logo.jsx'
+import { useAuth } from '../../context/AuthContext.jsx'
+import { t } from '../../lib/strings.js'
+import './auth.css'
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/
 
@@ -63,21 +65,16 @@ function Field({ label, htmlFor, error, right, children }) {
   )
 }
 
-export default function App() {
-  const [mode, setMode] = useState('login')
+export default function AuthPage({ mode }) {
+  const { status, login, register } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
   const [height, setHeight] = useState(null)
   const [data, setData] = useState({ name: '', email: '', password: '' })
   const [errors, setErrors] = useState({})
   const [result, setResult] = useState(null) // 'register' | null
-  const [view, setView] = useState('auth') // 'auth' | 'app'
-  const [lang, setLang] = useState('ru') // 'ru' | 'en'
-
-  const t = STRINGS[lang]
-  const toggleLang = () => setLang((l) => (l === 'ru' ? 'en' : 'ru'))
-
-  useEffect(() => {
-    document.documentElement.lang = lang
-  }, [lang])
+  const [busy, setBusy] = useState(false)
+  const [formError, setFormError] = useState('')
 
   const loginRef = useRef(null)
   const registerRef = useRef(null)
@@ -99,75 +96,72 @@ export default function App() {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', measure)
     }
-  }, [mode, result, lang, activeRef.current])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- re-measure when the visible form changes
+  }, [mode, result, formError])
 
   const switchMode = (next) => {
     if (next === mode) return
-    setMode(next)
+    navigate(next === 'login' ? '/login' : '/register', { replace: true })
     setErrors({})
+    setFormError('')
   }
 
   const setField = (field) => (e) => {
     const value = e.target.value
     setData((d) => ({ ...d, [field]: value }))
     if (errors[field]) setErrors((er) => ({ ...er, [field]: undefined }))
+    if (formError) setFormError('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    if (busy) return
     const er = {}
     if (mode === 'register' && !data.name.trim()) er.name = t.errorName
     if (!EMAIL_RE.test(data.email.trim())) er.email = t.errorEmail
     if (data.password.length < 6) er.password = t.errorPassword
     setErrors(er)
-    if (Object.keys(er).length === 0) {
-      if (mode === 'login') setView('app')
-      else setResult('register')
+    setFormError('')
+    if (Object.keys(er).length > 0) return
+
+    setBusy(true)
+    try {
+      if (mode === 'login') {
+        await login(data.email.trim(), data.password)
+        navigate(location.state?.from || '/app', { replace: true })
+      } else {
+        await register(data.name.trim(), data.email.trim(), data.password)
+        setResult('register')
+      }
+    } catch (err) {
+      if (err.detail === 'email_taken') setErrors({ email: t.errorEmailTaken })
+      else if (err.detail === 'invalid_credentials') setFormError(t.errorInvalidCredentials)
+      else if (err.status === 0) setFormError(t.errorNetwork)
+      else setFormError(t.errorGeneric)
+    } finally {
+      setBusy(false)
     }
   }
 
   const goToLogin = () => {
     setResult(null)
     setErrors({})
-    setMode('login')
     setData((d) => ({ ...d, password: '' }))
-  }
-
-  const handleLogout = () => {
-    setView('auth')
-    setResult(null)
-    setErrors({})
-    setMode('login')
-    setData((d) => ({ ...d, password: '' }))
+    navigate('/login', { replace: true })
   }
 
   const isLogin = mode === 'login'
 
-  if (view === 'app') {
-    return (
-      <Dashboard
-        email={data.email}
-        t={t}
-        lang={lang}
-        onToggleLang={toggleLang}
-        onLogout={handleLogout}
-      />
-    )
-  }
+  if (status === 'loading') return null
+  if (status === 'authed') return <Navigate to="/app" replace />
 
   return (
     <div className="page">
-      <div className="topbar">
-        <LangButton lang={lang} onToggle={toggleLang} />
-      </div>
+      <Link to="/" className="back-home">← {t.backHome}</Link>
 
       <main className="card">
         <div className="brand">
-          <div className="brand__mark" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#fff">
-              <path d="M6.5 3.5h11a1 1 0 0 1 1 1v16l-6.5-3.8-6.5 3.8v-16a1 1 0 0 1 1-1Z" />
-            </svg>
-          </div>
+          <LogoMark />
           <h1 className="brand__name">JobSaver</h1>
           <p className="brand__tagline">
             {isLogin ? t.taglineLogin : t.taglineRegister}
@@ -228,7 +222,8 @@ export default function App() {
                 t={t}
               />
             </Field>
-            <button type="submit" className="btn">{t.signIn}</button>
+            {formError && isLogin && <p className="form__error" role="alert">{formError}</p>}
+            <button type="submit" className="btn" disabled={busy}>{busy ? t.loading : t.signIn}</button>
           </form>
 
           <form
@@ -267,7 +262,8 @@ export default function App() {
                 t={t}
               />
             </Field>
-            <button type="submit" className="btn">{t.createAccount}</button>
+            {formError && !isLogin && <p className="form__error" role="alert">{formError}</p>}
+            <button type="submit" className="btn" disabled={busy}>{busy ? t.loading : t.createAccount}</button>
           </form>
 
           <div ref={successRef} className={`success${result ? ' success--active' : ''}`}>
